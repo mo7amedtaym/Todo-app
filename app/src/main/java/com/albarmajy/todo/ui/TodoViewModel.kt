@@ -1,38 +1,40 @@
 package com.albarmajy.todo.ui
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.albarmajy.todo.data.Task
-import com.albarmajy.todo.data.TaskRepository
+import com.albarmajy.todo.domain.model.Task
+import com.albarmajy.todo.domain.usecase.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
-class TodoViewModel(private val repo: TaskRepository) : ViewModel() {
+@HiltViewModel
+class TodoViewModel @Inject constructor(
+    private val getTasksUseCase: GetTasksUseCase,
+    private val addTaskUseCase: AddTaskUseCase,
+    private val toggleTaskUseCase: ToggleTaskUseCase
+) : ViewModel() {
 
-    // نحتفظ بالحالة الحالية للمهمات
     val tasks = mutableStateListOf<Task>()
 
-    fun loadTasks(){
-        viewModelScope.launch{
-            val list = repo.getAllTasks()
+    fun loadTasks() {
+        viewModelScope.launch {
             tasks.clear()
-            tasks.addAll(list)
-
+            tasks.addAll(getTasksUseCase())
         }
     }
 
     fun addTask(title: String) {
         viewModelScope.launch {
-            val task = Task(title = title)
-            repo.addTask(task)
+            addTaskUseCase(title)
             loadTasks()
         }
     }
 
     fun toggleTask(task: Task) {
         viewModelScope.launch {
-            repo.toggleTask(task)
+            toggleTaskUseCase(task)
             loadTasks()
         }
     }
