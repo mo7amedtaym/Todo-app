@@ -10,9 +10,6 @@ import com.albarmajy.todo.domain.repository.TaskRepository
 
 class TaskRepositoryImpl( private val dao: TaskDao): TaskRepository {
 
-
-
-
     override suspend fun getAllTasks(): List<Task> {
         return dao.getAllTasks().map { it.toDomain() }
     }
@@ -23,5 +20,9 @@ class TaskRepositoryImpl( private val dao: TaskDao): TaskRepository {
 
     override suspend fun toggleTask(task: Task) {
         dao.updateTask(TaskEntity.fromDomain(task.copy(isDone = !task.isDone)))
+    }
+
+    override suspend fun deleteTask(task: Task) {
+        dao.deleteTask(TaskEntity.fromDomain(task))
     }
 }

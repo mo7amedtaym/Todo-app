@@ -1,6 +1,7 @@
 package com.albarmajy.todo.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -9,7 +10,7 @@ import com.albarmajy.todo.domain.model.Task
 @Dao
 interface TaskDao {
 
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM task")
     suspend fun getAllTasks(): List<TaskEntity>
 
     @Insert
@@ -17,4 +18,8 @@ interface TaskDao {
 
     @Update
     suspend fun updateTask(task: TaskEntity)
+
+    @Delete
+    suspend fun deleteTask(task: TaskEntity)
+
 }
